@@ -49,7 +49,7 @@ services:
     environment:
       - EMAIL=${ACME_DEFAULT_EMAIL}
       - DOMAIN=${DOMAIN}
-    volumns:
+    volumes:
       - certbot-web:/vol/www
       - certbot-certs:/etc/letsencrypt
     depends_on:
