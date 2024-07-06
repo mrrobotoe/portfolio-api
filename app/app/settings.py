@@ -162,7 +162,8 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
     "http://localhost:3000",
     "http://192.168.0.181:5173",
-    "http://sparkly-clafoutis-a63d99.netlify.app",
+    "https://sparkly-clafoutis-a63d99.netlify.app",
+    "http://ec2-107-20-16-12.compute-1.amazonaws.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
