@@ -14,7 +14,7 @@ RUN mkdir -p /vol/static && \
     chmod 755 /vol/static && \
     touch /etc/nginx/conf.d/default.conf && \
     chown nginx:nginx /etc/nginx/conf.d/default.conf && \
-    apk add --no-cache openssl && \
+    apk add --no-cache openssl bash && \
     chmod +x /run.sh
 
 VOLUME /vol/static
