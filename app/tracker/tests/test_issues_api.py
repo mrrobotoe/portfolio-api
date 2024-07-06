@@ -59,20 +59,22 @@ class PrivateIssueAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_user()
-        self.user = self.client.force_authenticate(self.user)
+        self.client.force_authenticate(self.user)
         self.organization = Organization.objects.create(
             name="Sample Organization"
         )
         self.project = Project.objects.create(
-            organization=self.organization, name="Sample Project"
+            organization=self.organization,
+            name="Sample Project",
         )
+        self.project.members.add(self.user)
 
     def test_retrieve_issues(self):
         """Test retrieving issues in the API."""
         create_issue(user=self.user, project=self.project)
         create_issue(user=self.user, project=self.project)
 
-        res = self.client.get(ISSUES_URL, {"project": self.project.id})
+        res = self.client.get(ISSUES_URL)
 
         issues = Issue.objects.all().order_by("-id")
         serializer = IssueSerializer(issues, many=True)
