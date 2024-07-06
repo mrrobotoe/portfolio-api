@@ -6,10 +6,6 @@ from rest_framework import serializers
 
 import datetime
 
-from django.contrib.auth import get_user_model, authenticate
-
-from django.contrib.auth import get_user_model, authenticate
-
 from core.models import Issue, Organization, Project
 
 
