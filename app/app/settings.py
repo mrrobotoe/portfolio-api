@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "changeme")
 DEBUG = bool(int(os.environ.get("DEBUG", 0)))
 
 # ALLOWED_HOSTS = ["192.168.0.51", "192.168.0.181", "127.0.0.1"]
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://sparkly-clafoutis-a63d99.netlify.app/"]
 ALLOWED_HOSTS.extend(
     filter(
         None,
@@ -163,6 +163,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
     "http://192.168.0.181:5173",
     "https://sparkly-clafoutis-a63d99.netlify.app",
+    "https://ec2-107-20-16-12.compute-1.amazonaws.com",
     "http://ec2-107-20-16-12.compute-1.amazonaws.com",
 ]
 
