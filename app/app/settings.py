@@ -25,18 +25,17 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "changeme")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get("DJANGO_DEBUG", 0)))
 
-# ALLOWED_HOSTS = ["192.168.0.51", "192.168.0.181", "127.0.0.1"]
 ALLOWED_HOSTS = []
-ALLOWED_HOSTS = (
-    [] if DEBUG else os.environ.get("DJANGO_ALLOWED_HOSTS").split(",")
-)
-
-# ALLOWED_HOSTS.extend(
-#     filter(
-#         None,
-#         os.environ.get("ALLOWED_HOSTS", "").split(","),
-#     )
+# ALLOWED_HOSTS = (
+#     [] if DEBUG else os.environ.get("DJANGO_ALLOWED_HOSTS").split(",")
 # )
+
+ALLOWED_HOSTS.extend(
+    filter(
+        None,
+        os.environ.get("ALLOWED_HOSTS", "").split(","),
+    )
+)
 
 
 # Application definition
