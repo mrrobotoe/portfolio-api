@@ -1,5 +1,4 @@
-FROM nginxinc/nginx-unprivileged:1-alpine
-LABEL maintainer="me"
+FROM nginx:1.23.0-alpine
 
 COPY ./nginx/* /etc/nginx/
 COPY ./run.sh /run.sh
@@ -9,10 +8,8 @@ ENV APP_PORT=9000
 
 USER root
 
-RUN mkdir -p /vol/static && \
-    chmod 755 /vol/static && \
-    apk add --no-cache openssl bash && \
-    chmod +x /run.sh
+RUN apk add --no-cache openssl bash
+RUN chmod +x /run.sh
 
 VOLUME /vol/static
 VOLUME /vol/www
