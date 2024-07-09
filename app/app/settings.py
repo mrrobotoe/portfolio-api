@@ -167,10 +167,6 @@ SPECTACULAR_SETTINGS = {
 
 # CORS_ORIGIN_WHITELIST = [
 #     "http://localhost:5173",
-#     "http://localhost:3000",
-#     "http://192.168.0.181:5173",
-#     "https://sparkly-clafoutis-a63d99.netlify.app",
-#     "http://sparkly-clafoutis-a63d99.netlify.app",
 # ]
 
 # CORS_ALLOW_CREDENTIALS = True
