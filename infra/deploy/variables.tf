@@ -12,12 +12,3 @@ variable "contact" {
   description = "Contact information for the tagging resources"
   default     = "acm.holmes@outlook.com"
 }
-
-# variable "db_username" {
-#   description = "Username for the portfolio app api database"
-#   default     = "portfolioapp"
-# }
-
-# variable "db_password" {
-#   description = "Password for the Terraform database"
-# }
