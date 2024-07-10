@@ -165,9 +165,9 @@ SPECTACULAR_SETTINGS = {
     "COMPONENT_SPLIT_REQUEST": True,
 }
 
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:5173",
-]
+# CORS_ORIGIN_WHITELIST = [
+#     "http://localhost:5173",
+# ]
 
 # CORS_ALLOW_CREDENTIALS = True
 
