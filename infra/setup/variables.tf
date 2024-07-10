@@ -5,7 +5,7 @@ variable "tf_state_bucket" {
 
 variable "tf_state_lock_table" {
   description = "Name of DynamoDB table to store Terraform state lock"
-  default     = "devops-portfolio-app-api-tf-lock"
+  default     = "devops-portfolio-api-app-tf-lock"
 }
 
 variable "project" {
