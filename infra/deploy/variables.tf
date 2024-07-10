@@ -13,11 +13,11 @@ variable "contact" {
   default     = "acm.holmes@outlook.com"
 }
 
-variable "db_username" {
-  description = "Username for the portfolio app api database"
-  default = "portfolioapp"
-}
+# variable "db_username" {
+#   description = "Username for the portfolio app api database"
+#   default     = "portfolioapp"
+# }
 
-variable "db_password" {
-  description = "Password for the Terraform database"
-}
+# variable "db_password" {
+#   description = "Password for the Terraform database"
+# }
