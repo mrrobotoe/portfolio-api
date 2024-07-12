@@ -117,6 +117,7 @@ data "aws_iam_policy_document" "ec2" {
       "ec2:DisassociateRouteTable",
       "ec2:DeleteRoute",
       "ec2:DescribeAvailabilityZones",
+      "ec2:DescribeAccountAttributes",
       "ec2:DescribePrefixLists",
       "ec2:DescribeSubnets",
       "ec2:DescribeVpcAttribute",
