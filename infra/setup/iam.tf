@@ -106,6 +106,7 @@ data "aws_iam_policy_document" "ec2" {
       "ec2:DeleteSubnet",
       "ec2:DeleteSecurityGroup",
       "ec2:DescribeNetworkInterfaces",
+      "ec2:DescribeNetworkInterfaceAttribute",
       "ec2:DetachInternetGateway",
       "ec2:DescribeInternetGateways",
       "ec2:DeleteInternetGateway",
