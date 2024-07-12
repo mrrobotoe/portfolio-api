@@ -92,6 +92,11 @@ resource "aws_ecs_task_definition" "api" {
             readOnly      = false
             containerPath = "/vol/web/static"
             sourceVolume  = "static"
+          },
+          {
+            readOnly      = false
+            containerPath = "/vol/web/media"
+            sourceVolume  = "efs-media"
           }
         ],
         logConfiguration = {
@@ -126,6 +131,11 @@ resource "aws_ecs_task_definition" "api" {
             readOnly      = true
             containerPath = "/vol/static"
             sourceVolume  = "static"
+          },
+          {
+            readOnly      = true
+            containerPath = "/vol/media"
+            sourceVolume  = "efs-media"
           }
         ]
         logConfiguration = {
@@ -144,6 +154,18 @@ resource "aws_ecs_task_definition" "api" {
     name = "static"
   }
 
+  volume {
+    name = "efs-media"
+    efs_volume_configuration {
+      file_system_id     = aws_efs_file_system.media.id
+      transit_encryption = "ENABLED"
+
+      authorization_config {
+        access_point_id = aws_efs_access_point.media.id
+        iam             = "DISABLED"
+      }
+    }
+  }
   runtime_platform {
     operating_system_family = "LINUX"
     cpu_architecture        = "X86_64"
@@ -184,7 +206,7 @@ resource "aws_security_group" "ecs_service" {
       aws_subnet.private_b.cidr_block,
     ]
   }
-  
+
   # HTTP inbound access
   ingress {
     from_port = 8000
