@@ -35,26 +35,12 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin):
-    """User in the system."""
-
-    email = models.EmailField(max_length=255, unique=True)
-    name = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-
-    objects = UserManager()
-
-    USERNAME_FIELD = "email"
-
-
-class Organization(models.Model):
-    """Organization objects."""
+class Team(models.Model):
+    """Team objects."""
 
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    members = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.name
@@ -63,17 +49,61 @@ class Organization(models.Model):
 class Project(models.Model):
     """Project objects."""
 
-    organization = models.ForeignKey(
-        Organization, related_name="projects", on_delete=models.CASCADE
+    team = models.ForeignKey(
+        Team, related_name="projects", on_delete=models.DO_NOTHING
     )
 
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    members = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.name
+
+    @property
+    def team_name(self):
+        return self.team.name
+
+
+class User(AbstractBaseUser, PermissionsMixin):
+    """User in the system."""
+
+    USER_ROLES = [
+        (1, "ADMIN"),
+        (2, "USER"),
+    ]
+
+    email = models.EmailField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
+    user_role = models.CharField(
+        max_length=150, default="2", choices=USER_ROLES
+    )
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    team = models.ForeignKey(
+        Team,
+        related_name="members",
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
+    )
+
+    projects = models.ForeignKey(
+        Project,
+        related_name="members",
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
+    )
+
+    objects = UserManager()
+
+    USERNAME_FIELD = "email"
+
+    @property
+    def team_name(self):
+        return self.team.name
 
 
 class Issue(models.Model):
@@ -82,14 +112,20 @@ class Issue(models.Model):
     project = models.ForeignKey(
         Project,
         related_name="issues",
-        on_delete=models.CASCADE,
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True,
+    )
+
+    team = models.ForeignKey(
+        Team, related_name="issues", on_delete=models.DO_NOTHING, null=True
     )
 
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     status = models.CharField(max_length=150, default="Open")
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(default=None, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="created_by_user",
@@ -98,10 +134,9 @@ class Issue(models.Model):
     )
     assigned_to = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        related_name="assigned_user",
+        related_name="assigned_to_user",
         on_delete=models.DO_NOTHING,
         null=True,
-        blank=True,
     )
 
     def __str__(self):
@@ -110,3 +145,7 @@ class Issue(models.Model):
     @property
     def project_name(self):
         return self.project.name
+
+    @property
+    def team_name(self):
+        return self.team.name

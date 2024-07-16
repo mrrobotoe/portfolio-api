@@ -33,10 +33,4 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 
     def get_object(self, format=None):
         """Retrieve and return authenticated user."""
-        # if self.request.auth is None or self.request.user.is_anonymous:
-        #     return Response(
-        #         {"detail": "Update message."},
-        #         status=status.HTTP_200_OK,
-        #     )
-
         return self.request.user

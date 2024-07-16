@@ -6,14 +6,16 @@ from rest_framework import serializers
 
 import datetime
 
-from core.models import Issue, Organization, Project
+from core.models import Issue, Team, Project, User
 
 
 class IssueSerializer(serializers.ModelSerializer):
     """Serializer for issue objects."""
 
-    # project = serializers.ForeignRelatedKey(Project, related_name="Project")
-    project_name = serializers.ReadOnlyField()
+    team = serializers.StringRelatedField(
+        read_only=True,
+        required=False,
+    )
 
     class Meta:
         model = Issue
@@ -23,7 +25,7 @@ class IssueSerializer(serializers.ModelSerializer):
             "description",
             "status",
             "project",
-            "project_name",
+            "team",
             "created_at",
         ]
         read_only_fields = ["id"]
@@ -58,7 +60,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
-            "organization",
+            "team",
         ]
         read_only_fields = ["id"]
 
@@ -75,14 +77,14 @@ class ProjectDetailSerializer(ProjectSerializer):
     class Meta(ProjectSerializer.Meta):
         fields = ProjectSerializer.Meta.fields + [
             "issues",
-            "members",
+            "team",
             "created_at",
             "updated_at",
         ]
 
 
-class OrganizationSerializer(serializers.ModelSerializer):
-    """Serializer for organization objects."""
+class TeamSerializer(serializers.ModelSerializer):
+    """Serializer for team objects."""
 
     projects = serializers.PrimaryKeyRelatedField(
         many=True,
@@ -90,8 +92,14 @@ class OrganizationSerializer(serializers.ModelSerializer):
         required=False,
     )
 
+    members = serializers.StringRelatedField(
+        many=True,
+        read_only=True,
+        required=False,
+    )
+
     class Meta:
-        model = Organization
+        model = Team
         fields = [
             "id",
             "name",
@@ -101,11 +109,10 @@ class OrganizationSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
     def update(self, instance, validated_data):
-        """Update Organization."""
-
-        new_member = validated_data.pop("members", None)[0]
-
-        instance.members.add(new_member)
+        """Update Team."""
+        if "members" in self.context["request"].data:
+            for member in self.context["request"].data["members"]:
+                instance.members.add(User.objects.get(id=member))
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -114,13 +121,12 @@ class OrganizationSerializer(serializers.ModelSerializer):
         return instance
 
 
-class OrganizationDetailSerializer(OrganizationSerializer):
-    """Serializer for organization detail view."""
+class TeamDetailSerializer(TeamSerializer):
+    """Serializer for team detail view."""
 
-    class Meta(OrganizationSerializer.Meta):
-        fields = OrganizationSerializer.Meta.fields + [
+    class Meta(TeamSerializer.Meta):
+        fields = TeamSerializer.Meta.fields + [
             "projects",
-            "members",
             "created_at",
             "updated_at",
         ]

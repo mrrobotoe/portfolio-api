@@ -49,7 +49,29 @@ class UserAdmin(BaseUserAdmin):
     )
 
 
+class UserInline(admin.TabularInline):
+    model = models.User
+    fields = ("email", "projects")
+    readonly_fields = ("email",)
+    extra = 0
+
+
+class TeamAdmin(admin.ModelAdmin):
+    """Define admin pages for teams."""
+
+    model = models.Team
+    inlines = [
+        UserInline,
+    ]
+    ordering = ["id"]
+
+    list_display = [
+        "name",
+    ]
+    fieldsets = ((None, {"fields": ("name",)}),)
+
+
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Project)
 admin.site.register(models.Issue)
-admin.site.register(models.Organization)
+admin.site.register(models.Team, TeamAdmin)

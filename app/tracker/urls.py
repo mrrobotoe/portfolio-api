@@ -11,7 +11,7 @@ from tracker import views
 router = DefaultRouter()
 router.register("issues", views.IssueViewSet)
 router.register("projects", views.ProjectViewSet)
-router.register("organizations", views.OrganizationViewSet)
+router.register("teams", views.TeamViewSet)
 
 app_name = "tracker"
 

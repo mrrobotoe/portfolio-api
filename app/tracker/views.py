@@ -6,7 +6,7 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Issue, Organization, Project
+from core.models import Issue, Team, Project
 from tracker import serializers
 
 
@@ -20,7 +20,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Create a new project."""
-        serializer.save(members=[self.request.user])
+        serializer.save(team=[self.request.user])
 
     def get_serializer_class(self):
         """Return appropriate serializer class."""
@@ -30,7 +30,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return self.serializer_class
 
     def get_queryset(self):
-        return self.queryset.filter(members=self.request.user)
+        return self.queryset.filter(team=self.request.user)
 
 
 class IssueViewSet(viewsets.ModelViewSet):
@@ -43,9 +43,10 @@ class IssueViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Retrieve issues for authenticated user."""
-        return self.queryset.filter(
-            project__members=self.request.user
-        ).order_by("-id")
+        if self.request.user.team is not None:
+            return self.queryset.filter(
+                team__id=self.request.user.team.id
+            ).order_by("-id")
 
     def get_serializer_class(self):
         """Return appropriate serializer class."""
@@ -56,29 +57,30 @@ class IssueViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Create a new issue."""
+        team = Team.objects.get(id=self.request.user.team.id)
         serializer.save(created_by=self.request.user)
-        serializer.save(members=[self.request.user])
+        serializer.save(team=team)
 
 
-class OrganizationViewSet(viewsets.ModelViewSet):
-    """View for manage organizations in tracker APIs."""
+class TeamViewSet(viewsets.ModelViewSet):
+    """View for manage teams in tracker APIs."""
 
-    serializer_class = serializers.OrganizationDetailSerializer
-    queryset = Organization.objects.all()
+    serializer_class = serializers.TeamDetailSerializer
+    queryset = Team.objects.all()
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         """Return appropriate serializer class."""
         if self.action == "list":
-            return serializers.OrganizationSerializer
+            return serializers.TeamSerializer
 
         return self.serializer_class
 
     def get_queryset(self):
-        """Retrieve organizations for authenticated user."""
+        """Retrieve teams for authenticated user."""
         return self.queryset.filter(members=self.request.user).order_by("-id")
 
     def perform_create(self, serializer):
-        """Create a new organization."""
+        """Create a new teams."""
         serializer.save(members=[self.request.user])

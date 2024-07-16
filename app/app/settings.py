@@ -167,6 +167,7 @@ CORS_ORIGIN_WHITELIST = [
     os.environ.get(
         "FRONTEND_URL", "https://sparkly-clafoutis-a63d99.netlify.app"
     ),
+    "http://localhost:5173",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
