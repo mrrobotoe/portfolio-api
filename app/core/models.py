@@ -149,3 +149,28 @@ class Issue(models.Model):
     @property
     def team_name(self):
         return self.team.name
+
+
+class Comment(models.Model):
+    """Comment objects."""
+
+    issue = models.ForeignKey(
+        Issue,
+        related_name="comments",
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True,
+    )
+
+    content = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="commented_by_user",
+        on_delete=models.DO_NOTHING,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.comment

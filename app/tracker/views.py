@@ -30,7 +30,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return self.serializer_class
 
     def get_queryset(self):
-        return self.queryset.filter(team=self.request.user)
+        return self.queryset.filter(team__id=self.request.user.team.id)
 
 
 class IssueViewSet(viewsets.ModelViewSet):

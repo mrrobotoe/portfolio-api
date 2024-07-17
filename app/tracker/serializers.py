@@ -6,7 +6,7 @@ from rest_framework import serializers
 
 import datetime
 
-from core.models import Issue, Team, Project, User
+from core.models import Comment, Issue, Team, Project, User
 
 
 class IssueSerializer(serializers.ModelSerializer):
@@ -50,6 +50,22 @@ class IssueDetailSerializer(IssueSerializer):
             "assigned_to",
         ]
         read_only_fields = ["id", "created_at", "updated_at", "created_by"]
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    """Serializer for comment objects."""
+
+    class Meta:
+        model = Comment
+        fields = [
+            "id",
+            "issue",
+            "text",
+            "created_at",
+            "updated_at",
+            "created_by",
+        ]
+        read_only_fields = ["id"]
 
 
 class ProjectSerializer(serializers.ModelSerializer):
