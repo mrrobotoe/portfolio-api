@@ -9,7 +9,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Issue, Team, Project
+from core.models import Issue, Team
 
 from tracker.serializers import IssueSerializer
 

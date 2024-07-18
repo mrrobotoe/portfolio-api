@@ -49,7 +49,8 @@ class IssueViewSet(viewsets.ModelViewSet):
             ).order_by("-id")
         else:
             raise PermissionError(
-                "User must be assigned to a team before viewing, editing, or creating issues."
+                """User must be assigned to a team before viewing,
+                editing, or creating issues."""
             )
 
     def get_serializer_class(self):
