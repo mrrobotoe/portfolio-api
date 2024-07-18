@@ -9,7 +9,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Issue, Organization, Project
+from core.models import Issue, Team, Project
 
 from tracker.serializers import IssueSerializer
 
@@ -26,7 +26,7 @@ def create_user(email="user@example.com", password="testpass123"):
     return get_user_model().objects.create_user(email=email, password=password)
 
 
-def create_issue(user, project, **params):
+def create_issue(user, **params):
     """Create and return a sample issue."""
     defaults = {
         "title": "Sample Issue",
@@ -35,7 +35,7 @@ def create_issue(user, project, **params):
     }
     defaults.update(params)
 
-    issue = Issue.objects.create(project=project, created_by=user, **defaults)
+    issue = Issue.objects.create(created_by=user, team=user.team, **defaults)
 
     return issue
 
@@ -58,21 +58,15 @@ class PrivateIssueAPITests(TestCase):
 
     def setUp(self):
         self.client = APIClient()
+        team = Team.objects.create(name="Sample Team")
         self.user = create_user()
+        self.user.team = team
         self.client.force_authenticate(self.user)
-        self.organization = Organization.objects.create(
-            name="Sample Organization"
-        )
-        self.project = Project.objects.create(
-            organization=self.organization,
-            name="Sample Project",
-        )
-        self.project.members.add(self.user)
 
     def test_retrieve_issues(self):
         """Test retrieving issues in the API."""
-        create_issue(user=self.user, project=self.project)
-        create_issue(user=self.user, project=self.project)
+        create_issue(user=self.user)
+        create_issue(user=self.user)
 
         res = self.client.get(ISSUES_URL)
 
@@ -87,15 +81,12 @@ class PrivateIssueAPITests(TestCase):
         other_user = create_user(
             email="otheruser@example.com", password="testpassword123"
         )
-        project = Project.objects.create(
-            organization=self.organization,
-            name="Other Project",
-        )
-        create_issue(user=other_user, project=project)
 
-        create_issue(user=self.user, project=self.project)
+        create_issue(user=other_user)
 
-        res = self.client.get(ISSUES_URL, {"project": self.project.id})
+        create_issue(user=self.user)
+
+        res = self.client.get(ISSUES_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 1)

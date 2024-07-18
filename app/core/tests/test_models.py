@@ -54,22 +54,22 @@ class ModelTests(TestCase):
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
 
-    def test_create_organization(self):
-        """Test creating an organization."""
-        organization = models.Organization.objects.create(
-            name="Test Organization",
+    def test_create_team(self):
+        """Test creating a Team."""
+        team = models.Team.objects.create(
+            name="Test Team",
         )
 
-        self.assertEqual(str(organization), organization.name)
+        self.assertEqual(str(team), team.name)
 
     def test_create_project(self):
         """Test creating a project."""
-        organization = models.Organization.objects.create(
-            name="Test Organization",
+        team = models.Team.objects.create(
+            name="Test Team",
         )
 
         project = models.Project.objects.create(
-            organization=organization,
+            team=team,
             name="Test Project",
         )
 
@@ -77,13 +77,13 @@ class ModelTests(TestCase):
 
     def test_create_issue(self):
         """Test creating an issue."""
-        organization = models.Organization.objects.create(
-            name="Test Organization",
+        team = models.Team.objects.create(
+            name="Test Team",
         )
 
         project = models.Project.objects.create(
             name="Test Project",
-            organization=organization,
+            team=team,
         )
 
         issue = models.Issue.objects.create(

@@ -47,6 +47,10 @@ class IssueViewSet(viewsets.ModelViewSet):
             return self.queryset.filter(
                 team__id=self.request.user.team.id
             ).order_by("-id")
+        else:
+            raise PermissionError(
+                "User must be assigned to a team before viewing, editing, or creating issues."
+            )
 
     def get_serializer_class(self):
         """Return appropriate serializer class."""
